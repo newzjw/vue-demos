@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet"  type="text/css" href="./lib/animate.css">
+    <style>
+        .fade-enter {
+            opacity: 0;
+        }
+        .fade-enter-active {
+            transition: opacity 2s;
+        }
+        .fade-leave-to {
+            opacity: 0;
+        }
+        .fade-leave-active {
+            transition: opacity 2s;
+        }
+        .animate-enter,
+        .animate-leave-to {
+            opacity: 0;
+        }
+        .animate-enter-active
+        ,.animate-leave-active {
+            transition: opacity 4s;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <transition name="fade">
+                <div v-if="show">hello world    </div>
+        </transition>
+        
+        <button @click="handleClick">切换</button>
+        <!-- 使用animate.css，appear的作用是让页面第一次载入或刷新的时候也出现动画效果 -->
+        <!-- animated tada属于keyframe动画，animate-enter-active属于transition过渡动画 -->
+        <!-- 这里animated动画时间1秒，transition是4秒，type="transition"表示动画时长以transition为准 -->
+        <transition name="animate" 
+        type="transition"
+        appear
+        enter-active-class="animated tada animate-enter-active" 
+        leave-active-class="animated shake animate-leave-active"
+        appear-acitve-class="animated shake">
+                <div v-if="show">hello world    </div>
+        </transition>
+    </div>
+    <script src="./lib/vue.js"></script>
+    <script>
+        
+        var vm = new Vue({
+            el: "#app",
+            data:{
+                show: true
+            },
+            methods: {
+                handleClick: function(){
+                    this.show = !this.show
+                }
+            },
+            
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <transition name="fade" @before-enter="handleBeforeEnter" @enter="handleEnter"
+        @after-enter="handleAfterEnter">
+            <div v-show="show">hello world</div>
+        </transition>
+        <button @click="handleClick">toggle</button>
+    </div>
+
+    <script src="./lib/vue.js"></script>
+    <script src="./lib/velocity.js"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                show: true
+            },
+            methods: {
+                handleClick: function () {
+                    this.show = !this.show
+                },
+                handleBeforeEnter: function (el) {
+                    console.log("before enter") //当元素从消失到展示的时候，自动触发handleBeforeEnter方法
+                    el.style.color = "red"
+                },
+                handleEnter: function (el, done) {
+                    // 当before-enter执行结束后，执行enter事件
+                    setTimeout(() => {
+                        console.log("enter")
+                        el.style.color = "green"
+                    }, 2000)
+                    setTimeout( () => {
+                        done()
+                    }, 4000)
+                },
+                handleAfterEnter: function(el) {
+                    el.style.color = "pink"
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

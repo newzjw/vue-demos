@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <child content="zhu"></child>
+        <child content="liu"></child>
+    </div>
+
+    <script src="./lib/vue-2.4.0.js"></script>
+    <script>
+        // 使用bus/总线/发布订阅模式/观察者模式来解决非父子组件间传值问题
+        Vue.prototype.bus = new Vue()
+
+        Vue.component('child', {
+            // 解决单向数据流，做一份拷贝，改变拷贝的赋值就不会出错
+            data: function() {
+                return {
+                    selfContent: this.content
+                }
+            },
+            template: '<div @click="handleClick">{{selfContent}}</div>',
+            props:{
+                content: String
+            },
+            methods: {
+                handleClick: function(){
+                    this.bus.$emit('change', this.selfContent)
+                }
+            },
+            mounted: function(){
+                var _this = this
+                // 监听change事件
+                this.bus.$on('change', function(msg){
+                    _this.selfContent = msg
+                })
+            }
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {
+
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+</html>

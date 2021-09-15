@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #box{
+            height: 200px;
+            display: flex;
+        }
+        #left {
+            width: 100px;
+            background-color: #666;
+        }
+        #right {
+            width: 100px;
+            background-color: #666;
+        }
+        #center {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="left"></div>
+        <div id="center"></div>
+        <div id="right"></div>
+    </div>
+    <!-- 将来new的vue实例，会控制#app这个元素里的所有内容 -->
+    <!-- vue实例所控制的这个元素区域，就是MVVM里面的V -->
+    <div id="app">
+        <p>{{ msg }}</p>
+    </div>
+    <!-- 引入vue -->
+    <script src="./lib/vue-2.4.0.js"></script>
+    <script>
+        // 当我们导入了vue的包，浏览器的内存里就多了一个Vue的构造函数
+        // new出来的VUE对象，就是MVVM里面的VM
+        // 创建一个vue实例
+        var vm = new Vue({
+            // 以下是该vue实例的配置项
+            el: '#app', //el表示当前的vue实例控制的是页面上的哪个区域
+            data: { //这里的data是MVVM里面的M，专门用来保存每个页面的数据。注意，MVC里的M操作的是数据库里的数据
+                msg: "welcome to vue"
+            }
+            // 通过 Vue 提供的指令，很方便的就能把数据渲染到页面上，程序员不再手动操作DOM元素了【前端的Vue之类的框架，不提倡我们去手动操作DOM元素了】
+        })
+
+        // 实现两秒后改变p标签里的内容
+        // 如果用原生js，需要操作dom，而用vue，我们只需要关心数据，数据变了，页面上的内容跟着变化
+        setTimeout(function(){
+            vm.$data.msg = 'by vue'
+        }, 2000)
+        console.log(vm.$el)
+    </script>
+
+    
+</body>
+</html>

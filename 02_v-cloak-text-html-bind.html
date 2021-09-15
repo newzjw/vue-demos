@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 插值表达式闪烁的问题，就是网速很慢的时候，请求vue.js期间，页面会显示差值表达式{{ msg }} -->
+        <p>{{msg}}</p>
+        <!-- 使用 v-cloak 能够解决 插值表达式闪烁的问题 -->
+        <p v-cloak>+++{{msg}}------</p>
+        <!-- v-text和v-cloak的区别: -->
+        <!-- 1.默认 v-text 是没有闪烁问题的 -->
+        <!-- 2.v-text会覆盖元素中原本的内容，但是 插值表达式  只会替换自己的这个占位符，不会把 整个元素的内容清空 -->
+        <h4 v-text="msg">==========</h4>
+
+        <!-- 以下两个，都只会输出普通文本，而不会解析h1 -->
+        <p>{{ msg2 }}</p>
+        <p v-text="msg2"></p>
+        <!-- 用v-html能输出html，解析h1，同时会覆盖原来内容 -->
+        <p v-html="msg2">121</p>
+
+        <!-- v-bind: 是 Vue中，提供的用于绑定属性的指令 -->
+        <!-- Vue 中提供了 v-on: 事件绑定机制 -->
+        <input type="button" value="v-bind" :title="mytitle + 'javascript'" @click="show">
+    </div>
+
+    <script src="./lib/vue-2.4.0.js"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                msg: "学习vue",
+                msg2: "<h1>哈哈，我是一个大大的H1， 我大，我骄傲</h1>",
+                mytitle: "自己定义的一个标题"
+            },
+            // methods对象
+            methods: {// 这个 methods属性中定义了当前Vue实例所有可用的方法
+                show: function(){
+                    alert("on-bind用于绑定事件")
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

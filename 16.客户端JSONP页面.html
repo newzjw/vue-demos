@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function showInfo123(data) {
+      console.log(data)
+      // 打印出data
+      //       age: 18
+      // gender: "女孩子"
+      // name: "xjj"
+    }
+  </script>
+
+  <!-- script标签不受跨域限制 -->
+  <!-- 这里把方法的名称通过src传递给服务器 -->
+  <script src="http://127.0.0.1:3000/getscript?callback=showInfo123"></script>
+  <!-- 相当于从服务端返回了： -->
+  <!-- <script>
+    showInfo123(data)  //控制台打印出后端传递过来的data
+  </script> -->
+
+</body>
+
+</html>

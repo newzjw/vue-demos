@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <child>
+            <h1>zhu</h1>
+            <h2>123</h2>
+        </child>
+        <!-- 具名插槽的使用 -->
+        <body-content>
+            <div class="header" slot="header">header</div>
+            <div class="footer" slot="footer">footer</div>
+        </body-content>
+    </div>
+
+
+    <script src="./lib/vue-2.4.0.js"></script>
+    <script>
+        // 父组件给子组件传递dom结构，可以使用插槽
+        Vue.component('child', {
+
+            template: '<div><slot>默认内容</slot><p>hello</p><slot>默认内容</slot></div>',
+            props: {
+
+            },
+            methods: {
+
+            },
+            mounted: function () {
+
+            }
+        })
+        // 具名插槽的使用
+        Vue.component('body-content', {
+
+            template: `<div>
+            <slot name='header'></slot>
+            <div class='content'>content</div>
+            <slot name='footer'></slot>
+            </div>
+            `,
+            props: {
+
+            },
+            methods: {
+
+            },
+            mounted: function () {
+
+            }
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {
+
+            },
+            methods: {
+
+            },
+        })
+    </script>
+</body>
+
+</html>

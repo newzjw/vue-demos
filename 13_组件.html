@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 这么写出BUG了，不符合H5的编码规范，tbody的子元素必须是tr，而这里是row，生成的3个tr在table外面去了 -->
+        <table>
+            <tbody>
+                <row></row>
+                <row></row>
+                <row></row>
+            </tbody>
+        </table>
+        <!-- 解决办法，使用is -->
+        <!-- 同理，ul的子元素是li，select的子元素是option，也可以用此方法避免bug -->
+        <table>
+            <tbody>
+                <tr is="row"></tr>
+                <tr is="row"></tr>
+                <tr is="row"></tr>
+            </tbody>
+        </table>
+        <!-- ref引用的使用 -->
+        <div ref='hello' @click="handleClick">hello world</div>
+        <!-- 当子组件发生改变，向外触发事件，父组件监听到change事件，触发handleChange方法 -->
+        <counter ref="one" @change="handleChange"></counter>
+        <counter ref="two" @change="handleChange"></counter>
+        <div>{{ total }}</div>
+    </div>
+
+    <script>
+        //   创建全局组件
+        Vue.component('row', {
+            // 组件里定义的data不能是对象，而应该是函数
+            data: function () {
+                return {
+                    content: 'this is a row'
+                }
+            },
+            template: '<tr><td>{{content}}</td></tr>'
+        })
+        // 计数器组件
+        Vue.component('counter', {
+            // 组件里定义的data不能是对象，而应该是函数
+            data: function () {
+                return {
+                    number: 0
+                }
+            },
+            template: '<div @click="handleClick">{{number}}</div>',
+            methods: {
+                handleClick: function () {
+                    this.number += 1
+                    this.$emit('change')
+                }
+            }
+        })
+        // 创建 Vue 实例，得到 ViewModel
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                total: 0
+            },
+            methods: {
+                handleClick: function () {
+                    // this.$refs是所有的引用，this.$refs.hello就是该dom节点
+                    console.log(this.$refs.hello.innerHTML) // hello world
+                },
+                handleChange: function () {
+                    this.total = this.$refs.one.number + this.$refs.two.number
+                }
+            }
+        })
+
+
+        // 三个知识点
+        // is解决bug
+        // 子组件里的data是函数而不是对象
+        // ref的使用
+    </script>
+</body>
+
+</html>

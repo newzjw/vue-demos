@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <child :content="'1234'"></child>
+        <child :content2="12311"></child>
+        <child :content3="'aa'"></child>
+    </div>
+
+    <script src="./lib/vue-2.4.0.js"></script>
+    <script>
+        // 定义一个局部组件
+        Vue.component('child', {
+            // 组件的参数校验
+            props: {
+                content: String, //要求传递过来的content必须是String，如果传递的是数字，会警告
+                content2: [String, Number], // 可以设置多个条件
+                content3: {            // 可以用对象设置
+                    type: String,
+                    // required: true,         // 该属性必须传递，不然就警告
+                    default: 'default value', //如果没传递，默认值
+                    validator: function(value) { // 校验器
+                        console.log(value)  // aa
+                        return value.length > 1  // 要求传入的字符串的长度必须大于5
+                    }
+                }
+            },
+            template: '<div>{{content}}</div>'
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {
+
+            },
+            methods: {
+
+            },
+            // 注册局部组件
+            components: {
+            }
+        })
+
+
+
+    </script>
+</body>
+
+</html>

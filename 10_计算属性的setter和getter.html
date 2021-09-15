@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        {{ fullname }}
+    </div>
+
+    <script src="./lib/vue-2.4.0.js"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                firstName: "zhu",
+                lastName: "jiangwei"
+            },
+            computed: {
+                fullname: {
+                    // 当取fullname值的时候，get就会执行
+                    get: function () {
+                        return this.firstName + ' ' + this.lastName
+                    },
+                    // 当设置fullname值的时候，set就会执行
+                    set: function() {
+
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

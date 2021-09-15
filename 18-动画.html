@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.4.0.js"></script>
+    <link rel="stylesheet" href="./lib/animate.css">
+    <!-- 入场 bounceIn    离场 bounceOut -->
+
+
+    <!-- 2. 自定义两组样式，来控制 transition 内部的元素实现动画 -->
+    <style>
+        /* v-enter 【这是一个时间点】 是进入之前，元素的起始状态，此时还没有开始进入 */
+        /* v-leave-to 【这是一个时间点】 是动画离开之后，离开的终止状态，此时，元素 动画已经结束了 */
+        .v-enter {
+            opacity: 1;
+            transform: translateX(500px);
+        }
+
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(150px);
+        }
+
+        /* v-enter-active 【入场动画的时间段】 */
+        /* v-leave-active 【离场动画的时间段】 */
+        .v-enter-active {
+            transition: all 5s ease;
+        }
+
+        .v-leave-active {
+            transition: all 10s ease;
+        }
+
+        /* 修改v前缀，让动画效果只作用于my */
+        .my-enter,
+        .my-leave-to {
+            opacity: 0;
+            transform: translateY(70px);
+        }
+
+        .my-enter-active,
+        .my-leave-active {
+            transition: all 0.8s ease;
+        }
+
+        .ball {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: red;
+        }
+
+
+
+        li {
+            border: 1px dashed #999;
+            margin: 5px;
+            line-height: 35px;
+            padding-left: 5px;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        li:hover {
+            background-color: hotpink;
+            transition: all 0.8s ease;
+        }
+
+
+        /* 实现列表的动画 */
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateY(80px);
+        }
+
+        .v-enter-active,
+        .v-leave-active {
+            transition: all 0.6s ease;
+        }
+
+        /* 下面的 .v-move 和 .v-leave-active 配合使用，能够实现列表后续的元素，渐渐地漂上来的效果 */
+        .v-move {
+            transition: all 0.6s ease;
+        }
+
+        .v-leave-active {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <input type="button" value="toggle" @click="flag=!flag">
+        <!-- 需求： 点击按钮，让 h3 显示，再点击，让 h3 隐藏 -->
+        <!-- 不使用动画 -->
+        <h3 v-if="flag">这是一个H3，不使用动画</h3>
+        <!-- 使用动画，渐入渐出 -->
+        <!-- 1. 使用 transition 元素，把 需要被动画控制的元素，包裹起来 -->
+        <!-- transition 元素，是 Vue 官方提供的 -->
+        <transition>
+            <h3 v-if="flag">这是一个H3，使用动画</h3>
+        </transition>
+
+        <!-- 使用第三方animate类库实现动画 -->
+        <!-- 类里面写入场和离场时动画的类名就可以了 -->
+        <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
+            <h3 v-if="flag">这是一个H3，使用第三方类库</h3>
+        </transition>
+        <!-- 使用 :duration="毫秒值" 来统一设置 入场 和 离场 时候的动画时长 -->
+        <transition enter-active-class="bounceIn" leave-active-class="bounceOut" :duration="110000">
+            <h3 v-if="flag" class="animated">这是一个H3，使用第三方类库，duration</h3>
+        </transition>
+        <!-- 使用  :duration="{ enter: 200, leave: 400 }"  来分别设置 入场的时长 和 离场的时长  -->
+        <transition enter-active-class="bounceIn" leave-active-class="bounceOut"
+            :duration="{ enter: 200, leave: 4000 }">
+            <h3 v-if="flag" class="animated">这是一个H3</h3>
+        </transition>
+        <hr>
+
+        <input type="button" value="toggle2" @click="flag2=!flag2">
+        <!-- 修改v前缀 -->
+        <transition name="my">
+            <h6 v-if="flag2">这是一个H6，修改了前缀v，改用my</h6>
+        </transition>
+
+
+        <hr>
+        <!-- 使用钩子函数实现小球动画 -->
+        <input type="button" value="快到碗里来" @click="flag3=!flag3">
+        <!-- 1. 使用 transition 元素把 小球包裹起来 -->
+        <transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div class="ball" v-show="flag3"></div>
+        </transition>
+
+
+        <div>
+            <label>
+                Id:
+                <input type="text" v-model="id">
+            </label>
+
+            <label>
+                Name:
+                <input type="text" v-model="name">
+            </label>
+
+            <input type="button" value="添加" @click="add">
+        </div>
+
+        <!-- <ul> -->
+        <!-- 在实现列表过渡的时候，如果需要过渡的元素，是通过 v-for 循环渲染出来的，不能使用 transition 包裹，而需要使用 transitionGroup -->
+        <!-- 如果要为 v-for 循环创建的元素设置动画，必须为每一个 元素 设置 :key 属性 -->
+        <!-- 给 ransition-group 添加 appear 属性，实现页面刚展示出来时候，入场时候的效果 -->
+        <!-- 通过为transition-group 元素，设置 tag 属性，指定 transition-group 渲染为指定的元素，如果不指定 tag 属性，默认，渲染为 span 标签 -->
+        <transition-group appear tag="ul">
+            <li v-for="(item, i) in list" :key="item.id" @click="del(i)">
+                {{item.id}} --- {{item.name}}
+            </li>
+        </transition-group>
+        <!-- </ul> -->
+    </div>
+
+    <script>
+        // 创建 Vue 实例，得到 ViewModel
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                flag: false,
+                flag2: false,
+                flag3: false,
+                id: '',
+                name: '',
+                list: [
+                    { id: 1, name: '赵高' },
+                    { id: 2, name: '秦桧' },
+                    { id: 3, name: '严嵩' },
+                    { id: 4, name: '魏忠贤' }
+                ]
+            },
+            methods: {
+                // 注意： 动画钩子函数的第一个参数：el，表示 要执行动画的那个DOM元素，是个原生的 JS DOM对象
+                // 可以认为el 是通过 document.getElementById('') 方式获取到的原生JS DOM对象
+                beforeEnter(el) {
+                    // beforeEnter 表示动画入场之前，此时动画尚未开始，可以在beforeEnter 中，设置元素开始动画之前的起始样式
+                    // 设置小球开始动画之前的，起始位置
+                    el.style.transform = "translate(0, 0)"
+                },
+                enter(el, done) {
+                    // 这句话，没有实际的作用，但是，如果不写，出不来动画效果；
+                    // 可以认为 el.offsetWidth 会强制动画刷新
+                    el.offsetWidth
+                    // enter 表示动画 开始之后的样式，这里，可以设置小球完成动画之后的结束状态
+                    el.style.transform = "translate(150px, 450px)"
+                    el.style.transition = 'all 1s ease'
+
+                    // 这里的 done， 其实就是 afterEnter 这个函数，也就是说：done 是 afterEnter 函数的引用
+                    // 如果不在这里调用，那小球要等一段时间才会消失
+                    done()
+                },
+                // 动画完成之后，会调用 afterEnter
+                afterEnter(el) {
+                    // Vue 把一个完整的动画，使用钩子函数，拆分为了两部分：
+                    // 我们使用 flag 标识符，来表示动画的切换；
+                    // 这句话， 第一个功能，是控制小球的显示与隐藏
+                    // 第二个功能： 直接跳过后半场动画，让 flag 标识符 直接变为 false
+                    // 当第二次再点击 按钮的时候， flag  false  ->    true
+                    this.flag3 = !this.flag3
+                },
+
+                
+                add() {
+                    this.list.push({ id: this.id, name: this.name })
+                    this.id = this.name = ''
+                },
+                del(i) {
+                    this.list.splice(i, 1)
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

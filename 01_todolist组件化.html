@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" name="" id="" v-model="inputValue">
+        <button @click="handleBtnClick">提交</button>
+        <ul>
+            <!-- <li v-for="item in list">{{ item }}</li> -->
+            <!-- 通过list来决定循环几次，通过:语法，通过content这个变量将item传递给了子组件 -->
+            <todo-item :content="item" v-for="item in list"></todo-item>
+            <!-- 局部组件的使用 -->
+            <!-- @delete="handleItemClick"监听子组件的事件 -->
+            <todo-item2 :content="item" 
+                        :index="index"
+                        v-for="(item,index) in list"
+                        @delete="handleItemDelete">
+            </todo-item2>
+        </ul>
+    </div>
+
+
+    <script src="./lib/vue-2.4.0.js"></script>
+
+    <script>
+        // 全局组件的使用
+        // 定义一个全局组件
+        Vue.component("TodoItem", {
+            // 要使用父组件传递过来的数据，需要使用props进行接收
+            props: ['content'],
+            // 模板里使用差值表达式，组件就会把模板里面的东西渲染出来
+            template: "<li>{{content}}</li>"
+        })
+
+        // 局部组件的使用
+        // 定义一个对象
+        var TodoItem2 = {
+            props: ['content', 'index'],
+            // 实现点击li，删除该li
+            template: "<li @click='handleItemClick'>{{content}}</li>",
+            methods: {
+                handleItemClick() {
+                    // 数据放在父组件，我们要把数据从子组件传递给父组件
+                    // 子组件向外触发一个delete事件
+                    this.$emit("delete", this.index)
+                }
+            }
+        }
+        var app = new Vue({
+            el: '#app',
+            // 注册局部组件
+            components:{
+                TodoItem2: TodoItem2
+            },
+            data: {
+                list: [],
+                inputValue: ''
+            },
+            methods: {
+                handleBtnClick() {
+                    var content = this.inputValue
+                    this.list.push(content)
+                    this.inputValue = ''
+                },
+                // 父组件定义handleItemDelete方法
+                // index的值是子组件传递过来的
+                handleItemDelete(index){
+                    // 删除第index项数据
+                    this.list.splice(index, 1)
+                }
+
+            }
+        })
+
+        // 父组件向子组件传值，通过属性传递，通过v-bind的方式，子组件通过prop接收
+        // 子组件向父组件传值，通过this.$emit的方式，向上一层触发事件，父组件通过v-on监听，就能获取子组件传递的内容
+    </script>
+</body>
+
+</html>

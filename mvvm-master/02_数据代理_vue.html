@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>02_数据代理_vue</title>
+</head>
+<body>
+
+<div id="test"></div>
+
+<script src="./js/vue.js"></script>
+<script>
+  const vm = new Vue({
+    data: {
+      name: 'tom'
+    }
+  })
+  console.log(vm)
+
+  console.log(vm.name) // tom  代理读
+
+  vm.name = 'jack' // 代理写
+  // 写的时候触发set
+  // set: function proxySetter(newVal) {
+  //     // 将最新的值保存到data对应的属性上
+  //     me._data[key] = newVal;
+  // }
+  console.log(vm._data.name) // jack
+  
+</script>
+</body>
+</html>
